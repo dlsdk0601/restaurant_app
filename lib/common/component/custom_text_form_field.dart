@@ -19,7 +19,7 @@ class CustomTextFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final baseBorder = OutlineInputBorder(
+    const baseBorder = OutlineInputBorder(
       borderSide: BorderSide(
         color: INPUT_BORDER_COLOR,
         width: 1.0,
@@ -48,6 +48,7 @@ class CustomTextFormField extends StatelessWidget {
             color: PRIMARY_COLOR,
           ),
         ),
+        enabledBorder: baseBorder,
       ),
     );
   }
