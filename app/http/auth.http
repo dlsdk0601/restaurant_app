@@ -1,0 +1,9 @@
+### 로그인 API
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+Authorization: Basic dGVzdEBjb2RlZmFjdG9yeS5haTp0ZXN0dGVzdA==
+
+### token refresh
+POST http://localhost:3000/auth/token
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RAY29kZWZhY3RvcnkuYWkiLCJzdWIiOiJmNTViMzJkMi00ZDY4LTRjMWUtYTNjYS1kYTlkN2QwZDkyZTUiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzY5NzkwMCwiZXhwIjoxNzEzNzg0MzAwfQ.hD_rCQHGIuU6nKl8gdULcPs5N_xt0nrVoibWqVXJZY8
