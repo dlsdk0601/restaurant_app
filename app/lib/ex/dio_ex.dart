@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:restaurant_app/common/const/api_type.dart';
 import 'package:restaurant_app/ex/config.dart';
 
 class DioEx {
@@ -20,26 +21,49 @@ class DioEx {
     return getCodec().encode(raw);
   }
 
-  post({required String path, Options? options}) async {
+  String getBasicHeaderValue(String token) {
+    return "Basic $token";
+  }
+
+  String getBearerHeaderValue(String token) {
+    return "Bearer $token";
+  }
+
+  Map<String, String> getBasicHeader(String token) {
+    return {"authorization": getBasicHeaderValue(token)};
+  }
+
+  Map<String, String> getBearerHeader(String token) {
+    return {"authorization": getBearerHeaderValue(token)};
+  }
+
+  post({required String path, required String token}) async {
+    Options options = Options(
+      headers: path.endsWith("login")
+          ? getBasicHeader(token)
+          : getBearerHeader(token),
+    );
+
     return dio.post(path, options: options);
   }
 
-  signIn(String userName, String password) async {
+  Future<SignInRes> signIn(
+      {required String userName, required String password}) async {
     // id:password
     final raw = "$userName:$password";
     String token = getBase64(raw);
 
     final res = await post(
       path: "/auth/login",
-      options: Options(
-        headers: {
-          "authorization": "Basic $token",
-        },
-      ),
+      token: token,
     );
 
     print("res.data");
     print(res.data);
+    return SignInRes(
+      refreshToken: res.data["refreshToken"],
+      accessToken: res.data["accessToken"],
+    );
   }
 }
 

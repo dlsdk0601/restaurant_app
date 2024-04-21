@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:restaurant_app/common/component/custom_text_form_field.dart';
 import 'package:restaurant_app/common/const/colors.dart';
 import 'package:restaurant_app/common/layout/default_layout.dart';
+import 'package:restaurant_app/common/view/root_tab.dart';
 import 'package:restaurant_app/ex/dio_ex.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -70,7 +71,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    await dioEx.signIn(userName, password);
+                    final res = await dioEx.signIn(
+                      userName: userName,
+                      password: password,
+                    );
+
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => RootTab(),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: PRIMARY_COLOR,
