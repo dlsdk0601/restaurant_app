@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:restaurant_app/common/const/api_type.dart';
+import 'package:restaurant_app/common/const/data.dart';
 import 'package:restaurant_app/ex/config.dart';
 
 class DioEx {
@@ -58,8 +59,11 @@ class DioEx {
       token: token,
     );
 
-    print("res.data");
-    print(res.data);
+    final refreshToken = res.data["refreshToken"];
+    final accessToken = res.data["accessToken"];
+    await storage.write(key: REFRESH_TOKEN_KEY, value: refreshToken);
+    await storage.write(key: ACCESS_TOKEN_KEY, value: accessToken);
+
     return SignInRes(
       refreshToken: res.data["refreshToken"],
       accessToken: res.data["accessToken"],
