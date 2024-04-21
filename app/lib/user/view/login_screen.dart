@@ -1,10 +1,20 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:restaurant_app/common/component/custom_text_form_field.dart';
 import 'package:restaurant_app/common/const/colors.dart';
 import 'package:restaurant_app/common/layout/default_layout.dart';
+import 'package:restaurant_app/ex/dio_ex.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  String userName = '';
+  String password = '';
 
   @override
   Widget build(BuildContext context) {
@@ -37,21 +47,31 @@ class LoginScreen extends StatelessWidget {
                 ),
                 CustomTextFormField(
                   hinText: "이메일을 입력해주세요.",
-                  onChanged: (String value) {},
+                  onChanged: (String value) {
+                    setState(() {
+                      userName = value;
+                    });
+                  },
                 ),
                 const SizedBox(
                   height: 16.0,
                 ),
                 CustomTextFormField(
                   hinText: "비밀번호을 입력해주세요.",
-                  onChanged: (String value) {},
+                  onChanged: (String value) {
+                    setState(() {
+                      password = value;
+                    });
+                  },
                   obscureText: true,
                 ),
                 const SizedBox(
                   height: 16.0,
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    await dioEx.signIn(userName, password);
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: PRIMARY_COLOR,
                   ),
