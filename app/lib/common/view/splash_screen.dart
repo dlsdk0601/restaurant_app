@@ -3,6 +3,7 @@ import 'package:restaurant_app/common/const/colors.dart';
 import 'package:restaurant_app/common/const/data.dart';
 import 'package:restaurant_app/common/layout/default_layout.dart';
 import 'package:restaurant_app/common/view/root_tab.dart';
+import 'package:restaurant_app/ex/dio_ex.dart';
 import 'package:restaurant_app/user/view/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -23,18 +24,22 @@ class _SplashScreenState extends State<SplashScreen> {
     final refreshToken = await storage.read(key: REFRESH_TOKEN_KEY);
     final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
 
-    if (refreshToken == null || accessToken == null) {
+    final res = await dioEx.getAccessToken(refreshToken: refreshToken);
+
+    // error 났을때
+    if (res == null) {
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => const LoginScreen()),
         (route) => false,
       );
-    } else {
-      // TODO :: token 검증
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const RootTab()),
-        (route) => false,
-      );
+      return;
     }
+
+    // token 이 정상적으로 왔을때
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => const RootTab()),
+      (route) => false,
+    );
   }
 
   Future<void> deleteToken() async {

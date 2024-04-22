@@ -22,23 +22,23 @@ class DioEx {
     return getCodec().encode(raw);
   }
 
-  String getBasicHeaderValue(String token) {
+  String getBasicHeaderValue(String? token) {
     return "Basic $token";
   }
 
-  String getBearerHeaderValue(String token) {
+  String getBearerHeaderValue(String? token) {
     return "Bearer $token";
   }
 
-  Map<String, String> getBasicHeader(String token) {
+  Map<String, String> getBasicHeader(String? token) {
     return {"authorization": getBasicHeaderValue(token)};
   }
 
-  Map<String, String> getBearerHeader(String token) {
+  Map<String, String> getBearerHeader(String? token) {
     return {"authorization": getBearerHeaderValue(token)};
   }
 
-  post({required String path, required String token}) async {
+  post({required String path, required String? token}) async {
     Options options = Options(
       headers: path.endsWith("login")
           ? getBasicHeader(token)
@@ -68,6 +68,16 @@ class DioEx {
       refreshToken: res.data["refreshToken"],
       accessToken: res.data["accessToken"],
     );
+  }
+
+  Future<String?> getAccessToken({required String? refreshToken}) async {
+    try {
+      final res = await post(path: "/auth/token", token: refreshToken);
+
+      return res.data["accessToken"];
+    } catch (e) {
+      return null;
+    }
   }
 }
 
