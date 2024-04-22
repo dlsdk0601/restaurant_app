@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:restaurant_app/common/const/api_type.dart';
 import 'package:restaurant_app/common/const/data.dart';
-import 'package:restaurant_app/ex/config.dart';
 import 'package:restaurant_app/ex/dio_ex.dart';
 import 'package:restaurant_app/restaurant/component/restaurant_card.dart';
 
