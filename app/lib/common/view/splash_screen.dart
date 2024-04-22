@@ -36,6 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
     }
 
     // token 이 정상적으로 왔을때
+    await storage.write(key: ACCESS_TOKEN_KEY, value: res);
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (_) => const RootTab()),
       (route) => false,
