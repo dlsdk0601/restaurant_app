@@ -4,13 +4,11 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:restaurant_app/common/const/api_type.dart';
 import 'package:restaurant_app/common/const/data.dart';
-import 'package:restaurant_app/ex/config.dart';
 
 class DioEx {
   late final Dio dio;
 
   DioEx() {
-    final ip = Platform.isIOS ? config.simulatorIp : config.emulatorIp;
     dio = Dio(BaseOptions(baseUrl: ip));
   }
 
@@ -48,6 +46,18 @@ class DioEx {
     return dio.post(path, options: options);
   }
 
+  get({
+    required String path,
+    required Map<String, dynamic>? queryParameters,
+  }) async {
+    final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
+    return dio.get(
+      path,
+      options: Options(headers: {"authorization": "Bearer $accessToken"}),
+      queryParameters: queryParameters,
+    );
+  }
+
   Future<SignInRes> signIn(
       {required String userName, required String password}) async {
     // id:password
@@ -78,6 +88,18 @@ class DioEx {
     } catch (e) {
       return null;
     }
+  }
+
+  Future<List> getRestaurantList({
+    required String after,
+    required int count,
+  }) async {
+    final res = await get(path: "/restaurant", queryParameters: {
+      "after": after,
+      "count": count,
+    });
+
+    return res.data["data"];
   }
 }
 
