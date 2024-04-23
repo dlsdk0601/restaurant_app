@@ -3,6 +3,7 @@ import 'package:restaurant_app/common/const/api_type.dart';
 import 'package:restaurant_app/common/const/data.dart';
 import 'package:restaurant_app/ex/dio_ex.dart';
 import 'package:restaurant_app/restaurant/component/restaurant_card.dart';
+import 'package:restaurant_app/restaurant/view/restaurant_detail_screen.dart';
 
 class RestaurantScreen extends StatelessWidget {
   const RestaurantScreen({super.key});
@@ -25,15 +26,28 @@ class RestaurantScreen extends StatelessWidget {
               AsyncSnapshot<List<RestaurantListResItem>> snapshot,
             ) {
               if (!snapshot.hasData) {
-                return Container();
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
               }
 
               return ListView.separated(
                 itemBuilder: (_, index) {
                   final item = snapshot.data![index];
 
-                  return RestaurantCard.fromModel(
-                    model: item,
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => RestaurantDetailScreen(
+                            id: item.id,
+                          ),
+                        ),
+                      );
+                    },
+                    child: RestaurantCard.fromModel(
+                      model: item,
+                    ),
                   );
                 },
                 separatorBuilder: (_, index) {
