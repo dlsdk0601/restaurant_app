@@ -47,7 +47,7 @@ class DioEx {
 
   get({
     required String path,
-    required Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? queryParameters,
   }) async {
     final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
     return dio.get(
@@ -105,6 +105,13 @@ class DioEx {
           (e) => RestaurantListResItem.fromJson(json: e),
         )
         .toList();
+  }
+
+  Future<RestaurantShowRes> restaurantShow({required String id}) async {
+    final res = await get(path: "/restaurant/$id");
+    final data = res.data;
+
+    return RestaurantShowRes.fromJson(json: data);
   }
 }
 
