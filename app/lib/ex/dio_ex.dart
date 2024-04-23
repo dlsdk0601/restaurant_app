@@ -89,7 +89,7 @@ class DioEx {
     }
   }
 
-  Future<List> getRestaurantList({
+  Future<List<RestaurantListResItem>> getRestaurantList({
     required String after,
     required int count,
   }) async {
@@ -98,7 +98,13 @@ class DioEx {
       "count": count,
     });
 
-    return res.data["data"];
+    final List<dynamic> data = res.data["data"];
+
+    return data
+        .map(
+          (e) => RestaurantListResItem.fromJson(json: e),
+        )
+        .toList();
   }
 }
 
