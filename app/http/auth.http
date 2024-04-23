@@ -1,5 +1,5 @@
 ### 로그인 API
-POST http://localhost:3000/auth/login
+POST http://localhost:3001/auth/login
 Content-Type: application/json
 Authorization: Basic dGVzdEBjb2RlZmFjdG9yeS5haTp0ZXN0dGVzdA==
 
@@ -7,3 +7,8 @@ Authorization: Basic dGVzdEBjb2RlZmFjdG9yeS5haTp0ZXN0dGVzdA==
 POST http://localhost:3000/auth/token
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RAY29kZWZhY3RvcnkuYWkiLCJzdWIiOiJmNTViMzJkMi00ZDY4LTRjMWUtYTNjYS1kYTlkN2QwZDkyZTUiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzY5NzkwMCwiZXhwIjoxNzEzNzg0MzAwfQ.hD_rCQHGIuU6nKl8gdULcPs5N_xt0nrVoibWqVXJZY8
+
+### restaurant
+GET http://ia.jung.mock.pe.kr:3001/restaurant?count=20&after=
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RAY29kZWZhY3RvcnkuYWkiLCJzdWIiOiJmNTViMzJkMi00ZDY4LTRjMWUtYTNjYS1kYTlkN2QwZDkyZTUiLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzEzODU2MzE3LCJleHAiOjE3MTM4NTY2MTd9.MR_1hAMRFxNhpf7-BCYhtjW1VZ0IOqIDxoLoptIuIJM
