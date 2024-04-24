@@ -61,7 +61,7 @@ class CustomInterceptor extends Interceptor {
 
         // err 를 뱉지 말고 다시 resolve 한다.
         return handler.resolve(r);
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         return handler.reject(e);
       }
     }
