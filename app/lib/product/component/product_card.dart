@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:restaurant_app/common/const/api_type.dart';
 import 'package:restaurant_app/common/const/colors.dart';
-import 'package:restaurant_app/common/const/data.dart';
 
 class ProductCard extends StatelessWidget {
   final Image image;
@@ -20,7 +19,7 @@ class ProductCard extends StatelessWidget {
   factory ProductCard.fromModel({required RestaurantMenuItem model}) {
     return ProductCard(
       image: Image.network(
-        "${ip}${model.imgUrl}",
+        model.imgUrl,
         width: 110,
         height: 110,
         fit: BoxFit.cover,

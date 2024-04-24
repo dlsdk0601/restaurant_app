@@ -22,23 +22,29 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> checkToken() async {
     final refreshToken = await storage.read(key: REFRESH_TOKEN_KEY);
-    final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
 
-    final res = await dioEx.getAccessToken(refreshToken: refreshToken);
-
-    // error 났을때
-    if (res == null) {
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
-        (route) => false,
-      );
-      return;
+    if (refreshToken == null) {
+      return goToLoginScreen();
     }
 
-    // token 이 정상적으로 왔을때
-    await storage.write(key: ACCESS_TOKEN_KEY, value: res);
+    try {
+      final res = await dioEx.getAccessToken(refreshToken: refreshToken);
+
+      // token 이 정상적으로 왔을때
+      await storage.write(key: ACCESS_TOKEN_KEY, value: res.accessToken);
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const RootTab()),
+        (route) => false,
+      );
+    } catch (e) {
+      // error 났을때
+      goToLoginScreen();
+    }
+  }
+
+  void goToLoginScreen() {
     Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => const RootTab()),
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
       (route) => false,
     );
   }

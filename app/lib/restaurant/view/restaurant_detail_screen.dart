@@ -7,14 +7,14 @@ import 'package:restaurant_app/restaurant/component/restaurant_card.dart';
 
 class RestaurantDetailScreen extends StatelessWidget {
   final String id;
+
   const RestaurantDetailScreen({
     super.key,
     required this.id,
   });
 
   Future<RestaurantShowRes> getRestaurantDetail() async {
-    final res = await dioEx.restaurantShow(id: id);
-
+    final res = dioEx.restaurantShow(id: id);
     return res;
   }
 
@@ -25,6 +25,11 @@ class RestaurantDetailScreen extends StatelessWidget {
       child: FutureBuilder<RestaurantShowRes>(
         future: getRestaurantDetail(),
         builder: (_, AsyncSnapshot<RestaurantShowRes> snapshot) {
+          if (snapshot.hasError) {
+            return Container(
+              child: Text(snapshot.error.toString()),
+            );
+          }
           if (!snapshot.hasData) {
             return const Center(
               child: CircularProgressIndicator(),

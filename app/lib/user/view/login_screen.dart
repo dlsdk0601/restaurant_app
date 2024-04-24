@@ -1,9 +1,9 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:restaurant_app/common/component/custom_text_form_field.dart';
 import 'package:restaurant_app/common/const/colors.dart';
 import 'package:restaurant_app/common/layout/default_layout.dart';
 import 'package:restaurant_app/common/view/root_tab.dart';
+import 'package:restaurant_app/ex/data_utils.dart';
 import 'package:restaurant_app/ex/dio_ex.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -75,6 +75,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       userName: userName,
                       password: password,
                     );
+
+                    await DataUtils.setTokenStorage(res);
 
                     Navigator.of(context).push(
                       MaterialPageRoute(
