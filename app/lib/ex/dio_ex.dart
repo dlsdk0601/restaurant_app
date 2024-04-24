@@ -144,7 +144,7 @@ class DioEx extends DioBase {
     // login 의 경우 post 요청이 아닌 Basic 방식으로 하기에
     // 여기만 특별한 경우라서 따로 처리
     final token = getBase64("$userName:$password");
-    return userRepository.signIn(token: "Basic $token");
+    return userRepository.signIn(token: getBasicHeaderValue(token));
   }
 
   Future<TokenRes> getAccessToken({required String refreshToken}) async {

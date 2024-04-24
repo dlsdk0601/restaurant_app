@@ -8,12 +8,12 @@ part 'user_repository.g.dart';
 abstract class UserRepository {
   factory UserRepository(Dio dio, {String baseUrl}) = _UserRepository;
 
-  @GET("/auth/login")
+  @POST("/auth/login")
   Future<SignInRes> signIn({
     @Header("authorization") required String token,
   });
 
-  @GET("/auth/token")
+  @POST("/auth/token")
   Future<TokenRes> getToken({
     @Header("authorization") required String token,
   });
