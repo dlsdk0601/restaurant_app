@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:restaurant_app/common/view/splash_screen.dart';
-import 'package:restaurant_app/user/view/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
