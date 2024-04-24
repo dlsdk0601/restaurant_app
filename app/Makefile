@@ -7,6 +7,6 @@ gen-code: setup
 setup:
 	nix-shell --run 'flutter pub get'
 
-watch: setup
+watch:
 	nix-shell --run 'flutter pub run build_runner watch --delete-conflicting-outputs'
 
