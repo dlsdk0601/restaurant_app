@@ -1,3 +1,9 @@
+import 'package:json_annotation/json_annotation.dart';
+
+import 'data.dart';
+
+part 'api_type.g.dart';
+
 class SignInRes {
   final String refreshToken;
   final String accessToken;
@@ -7,9 +13,13 @@ class SignInRes {
 
 enum RestaurantPriceRange { cheap, medium, expensive }
 
+@JsonSerializable()
 class RestaurantListResItem {
   final String id; // "1952a209-7c26-4f50-bc65-086f6e64dbbd",
   final String name; // "우라나라에서 가장 맛있는 짜장면집",
+  @JsonKey(
+    fromJson: pathToUrl,
+  )
   final String thumbUrl; // "/img/thumb.png",
   final List<String> tags; // ["신규","세일중"],
   final RestaurantPriceRange priceRange; // "cheap",
@@ -30,23 +40,15 @@ class RestaurantListResItem {
     required this.deliveryFee,
   });
 
-  factory RestaurantListResItem.fromJson({required Map<String, dynamic> json}) {
-    return RestaurantListResItem(
-      id: json["id"],
-      name: json["name"],
-      thumbUrl: json["thumbUrl"],
-      tags: List<String>.from(json["tags"]),
-      priceRange: RestaurantPriceRange.values.firstWhere(
-        (e) => e.name == json["priceRange"],
-      ),
-      ratings: json["ratings"],
-      ratingsCount: json["ratingsCount"],
-      deliveryTime: json["deliveryTime"],
-      deliveryFee: json["deliveryFee"],
-    );
+  factory RestaurantListResItem.fromJson(Map<String, dynamic> json) =>
+      _$RestaurantListResItemFromJson(json);
+
+  static pathToUrl(String value) {
+    return "${ip}${value}";
   }
 }
 
+@JsonSerializable()
 class RestaurantMenuItem {
   final String id; // "1952a209-7c26-4f50-bc65-086f6e64dbbd",
   final String name; // "마라맛 코팩 떡볶이",
@@ -62,17 +64,11 @@ class RestaurantMenuItem {
     required this.price,
   });
 
-  factory RestaurantMenuItem.fromJson({required Map<String, dynamic> json}) {
-    return RestaurantMenuItem(
-      id: json["id"],
-      name: json["name"],
-      imgUrl: json["imgUrl"],
-      detail: json["detail"],
-      price: json["price"],
-    );
-  }
+  factory RestaurantMenuItem.fromJson(Map<String, dynamic> json) =>
+      _$RestaurantMenuItemFromJson(json);
 }
 
+@JsonSerializable()
 class RestaurantShowRes extends RestaurantListResItem {
   final String detail; // "오늘 주문하면 배송비 3000원 할인!",
   final List<RestaurantMenuItem> products;
@@ -91,25 +87,6 @@ class RestaurantShowRes extends RestaurantListResItem {
     required this.products,
   });
 
-  factory RestaurantShowRes.fromJson({required Map<String, dynamic> json}) {
-    return RestaurantShowRes(
-      id: json["id"],
-      name: json["name"],
-      thumbUrl: json["thumbUrl"],
-      tags: List<String>.from(json["tags"]),
-      priceRange: RestaurantPriceRange.values.firstWhere(
-        (e) => e.name == json["priceRange"],
-      ),
-      ratings: json["ratings"],
-      ratingsCount: json["ratingsCount"],
-      deliveryTime: json["deliveryTime"],
-      deliveryFee: json["deliveryFee"],
-      detail: json["detail"],
-      products: json["products"]
-          .map<RestaurantMenuItem>(
-            (e) => RestaurantMenuItem.fromJson(json: e),
-          )
-          .toList(),
-    );
-  }
+  factory RestaurantShowRes.fromJson(Map<String, dynamic> json) =>
+      _$RestaurantShowResFromJson(json);
 }

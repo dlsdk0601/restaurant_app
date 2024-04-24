@@ -102,7 +102,7 @@ class DioEx {
 
     return data
         .map(
-          (e) => RestaurantListResItem.fromJson(json: e),
+          (e) => RestaurantListResItem.fromJson(e),
         )
         .toList();
   }
@@ -111,7 +111,7 @@ class DioEx {
     final res = await get(path: "/restaurant/$id");
     final data = res.data;
 
-    return RestaurantShowRes.fromJson(json: data);
+    return RestaurantShowRes.fromJson(data);
   }
 }
 
