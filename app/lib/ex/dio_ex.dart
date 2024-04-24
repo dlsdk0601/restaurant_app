@@ -109,62 +109,46 @@ class DioBase {
   }
 }
 
-  Map<String, String> getBearerHeader(String? token) {
-    return {"authorization": getBearerHeaderValue(token)};
+class DioEx extends DioBase {
+  late final Dio dio;
+  late final UserRepository userRepository;
+  late final RestaurantRepository restaurantRepository;
+
+  DioEx() {
+    dio = Dio(BaseOptions(baseUrl: ip));
+    dio.interceptors.add(
+      CustomInterceptor(storage: storage),
+    );
+    userRepository = UserRepository(dio, baseUrl: ip);
+    restaurantRepository = RestaurantRepository(dio, baseUrl: ip);
   }
 
-  post({required String path, required String? token}) async {
-    Options options = Options(
-      headers: path.endsWith("login")
-          ? getBasicHeader(token)
-          : getBearerHeader(token),
-    );
-
-    return dio.post(path, options: options);
+  post({required String path, required Object? data}) async {
+    return dio.post(path, data: data);
   }
 
   get({
     required String path,
     Map<String, dynamic>? queryParameters,
   }) async {
-    final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
     return dio.get(
       path,
-      options: Options(headers: {"authorization": "Bearer $accessToken"}),
       queryParameters: queryParameters,
     );
   }
 
-  Future<SignInRes> signIn(
-      {required String userName, required String password}) async {
-    // id:password
-    final raw = "$userName:$password";
-    String token = getBase64(raw);
-
-    final res = await post(
-      path: "/auth/login",
-      token: token,
-    );
-
-    final refreshToken = res.data["refreshToken"];
-    final accessToken = res.data["accessToken"];
-    await storage.write(key: REFRESH_TOKEN_KEY, value: refreshToken);
-    await storage.write(key: ACCESS_TOKEN_KEY, value: accessToken);
-
-    return SignInRes(
-      refreshToken: res.data["refreshToken"],
-      accessToken: res.data["accessToken"],
-    );
+  Future<SignInRes> signIn({
+    required String userName,
+    required String password,
+  }) async {
+    // login 의 경우 post 요청이 아닌 Basic 방식으로 하기에
+    // 여기만 특별한 경우라서 따로 처리
+    final token = getBase64("$userName:$password");
+    return userRepository.signIn(token: "Basic $token");
   }
 
-  Future<String?> getAccessToken({required String? refreshToken}) async {
-    try {
-      final res = await post(path: "/auth/token", token: refreshToken);
-
-      return res.data["accessToken"];
-    } catch (e) {
-      return null;
-    }
+  Future<TokenRes> getAccessToken({required String refreshToken}) async {
+    return userRepository.getToken(token: refreshToken);
   }
 
   Future<List<RestaurantListResItem>> getRestaurantList({
@@ -186,10 +170,7 @@ class DioBase {
   }
 
   Future<RestaurantShowRes> restaurantShow({required String id}) async {
-    final res = await get(path: "/restaurant/$id");
-    final data = res.data;
-
-    return RestaurantShowRes.fromJson(data);
+    return restaurantRepository.getRestaurantDetail(id: id);
   }
 }
 
