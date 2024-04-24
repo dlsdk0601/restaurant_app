@@ -1,14 +1,27 @@
 import 'package:json_annotation/json_annotation.dart';
-
-import 'data.dart';
+import 'package:restaurant_app/ex/data_utils.dart';
 
 part 'api_type.g.dart';
 
+@JsonSerializable()
 class SignInRes {
   final String refreshToken;
   final String accessToken;
 
   SignInRes({required this.refreshToken, required this.accessToken});
+
+  factory SignInRes.fromJson(Map<String, dynamic> json) =>
+      _$SignInResFromJson(json);
+}
+
+@JsonSerializable()
+class TokenRes {
+  final String accessToken;
+
+  TokenRes({required this.accessToken});
+
+  factory TokenRes.fromJson(Map<String, dynamic> json) =>
+      _$TokenResFromJson(json);
 }
 
 enum RestaurantPriceRange { cheap, medium, expensive }
@@ -18,7 +31,7 @@ class RestaurantListResItem {
   final String id; // "1952a209-7c26-4f50-bc65-086f6e64dbbd",
   final String name; // "우라나라에서 가장 맛있는 짜장면집",
   @JsonKey(
-    fromJson: pathToUrl,
+    fromJson: DataUtils.pathToUrl,
   )
   final String thumbUrl; // "/img/thumb.png",
   final List<String> tags; // ["신규","세일중"],
@@ -42,16 +55,15 @@ class RestaurantListResItem {
 
   factory RestaurantListResItem.fromJson(Map<String, dynamic> json) =>
       _$RestaurantListResItemFromJson(json);
-
-  static pathToUrl(String value) {
-    return "${ip}${value}";
-  }
 }
 
 @JsonSerializable()
 class RestaurantMenuItem {
   final String id; // "1952a209-7c26-4f50-bc65-086f6e64dbbd",
   final String name; // "마라맛 코팩 떡볶이",
+  @JsonKey(
+    fromJson: DataUtils.pathToUrl,
+  )
   final String imgUrl; // "/img/img.png",
   final String detail; // "서울에서 두번째로 맛있는 떡볶이집! 리뷰 이벤트 진행중~",
   final int price; // 8000
