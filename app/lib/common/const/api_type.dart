@@ -3,6 +3,29 @@ import 'package:restaurant_app/ex/data_utils.dart';
 
 part 'api_type.g.dart';
 
+@JsonSerializable(genericArgumentFactories: true)
+class CursorPagination<T> {
+  final CursorPaginationMeta meta;
+  final List<T> data;
+
+  CursorPagination({required this.meta, required this.data});
+
+  factory CursorPagination.fromJson(
+          Map<String, dynamic> json, T Function(Object? json) fromJsonT) =>
+      _$CursorPaginationFromJson(json, fromJsonT);
+}
+
+@JsonSerializable()
+class CursorPaginationMeta {
+  final int count;
+  final bool hasMore;
+
+  CursorPaginationMeta({required this.count, required this.hasMore});
+
+  factory CursorPaginationMeta.fromJson(Map<String, dynamic> json) =>
+      _$CursorPaginationMetaFromJson(json);
+}
+
 @JsonSerializable()
 class SignInRes {
   final String refreshToken;
