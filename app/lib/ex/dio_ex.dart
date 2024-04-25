@@ -40,7 +40,7 @@ class CustomInterceptor extends Interceptor {
 
 // 응답을 받을 때
 
-// 에러가 났을 때
+  // 에러가 났을 때
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     // 401 => 유효하지 않는 토큰
