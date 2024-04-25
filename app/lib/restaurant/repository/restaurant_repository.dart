@@ -9,8 +9,14 @@ abstract class RestaurantRepository {
   factory RestaurantRepository(Dio dio, {String baseUrl}) =
       _RestaurantRepository;
 
-  // @GET("/")
-  // paginate();
+  @GET("/restaurant?after={after}&count={count}")
+  @Headers({
+    "accessToken": "true",
+  })
+  Future<CursorPagination<RestaurantListResItem>> paginate({
+    @Path("after") required String after,
+    @Path("count") required int count,
+  });
 
   @GET("/restaurant/{id}")
   @Headers({

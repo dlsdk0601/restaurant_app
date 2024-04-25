@@ -38,7 +38,12 @@ class CustomInterceptor extends Interceptor {
     return super.onRequest(options, handler);
   }
 
-// 응답을 받을 때
+  // 응답을 받을 때
+  @override
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
+    // 응답에 대해서는 따로 설정 할게 없어서 그냥 놔둔다.
+    return super.onResponse(response, handler);
+  }
 
   // 에러가 났을 때
   @override
@@ -155,18 +160,8 @@ class DioEx extends DioBase {
     required String after,
     required int count,
   }) async {
-    final res = await get(path: "/restaurant", queryParameters: {
-      "after": after,
-      "count": count,
-    });
-
-    final List<dynamic> data = res.data["data"];
-
-    return data
-        .map(
-          (e) => RestaurantListResItem.fromJson(e),
-        )
-        .toList();
+    final res = await restaurantRepository.paginate(after: after, count: count);
+    return res.data;
   }
 
   Future<RestaurantShowRes> restaurantShow({required String id}) async {
