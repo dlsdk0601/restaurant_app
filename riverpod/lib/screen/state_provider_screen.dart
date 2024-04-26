@@ -10,6 +10,8 @@ class StateProviderScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // ref 에는 watch 와 read 가 있는데,
+
     final provider = ref.watch(numberProvider);
 
     return DefaultLayout(
