@@ -173,7 +173,7 @@ class DioEx extends DioBase {
     required String after,
     required int count,
   }) async {
-    final res = await restaurantRepository.paginate(after: after, count: count);
+    final res = await restaurantRepository.paginate();
     return res.data;
   }
 

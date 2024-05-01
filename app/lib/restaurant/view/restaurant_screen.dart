@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:restaurant_app/common/const/api_type.dart';
 import 'package:restaurant_app/restaurant/component/restaurant_card.dart';
 import 'package:restaurant_app/restaurant/provider/restaurant_provider.dart';
 import 'package:restaurant_app/restaurant/view/restaurant_detail_screen.dart';
@@ -11,18 +12,21 @@ class RestaurantScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final data = ref.watch(restaurantProvider);
 
-    if (data.isEmpty) {
+    // Loading 일 때
+    if (data is CursorPaginationLoading) {
       return const Center(
         child: CircularProgressIndicator(),
       );
     }
 
+    final cp = data as CursorPagination;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: ListView.separated(
-        itemCount: data.length,
+        itemCount: cp.data.length,
         itemBuilder: (_, index) {
-          final item = data[index];
+          final item = cp.data[index];
 
           return GestureDetector(
             onTap: () {
