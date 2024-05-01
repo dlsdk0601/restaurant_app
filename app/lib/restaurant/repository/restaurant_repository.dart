@@ -20,13 +20,12 @@ abstract class RestaurantRepository {
   factory RestaurantRepository(Dio dio, {String baseUrl}) =
       _RestaurantRepository;
 
-  @GET("/restaurant?after={after}&count={count}")
+  @GET("/restaurant")
   @Headers({
     "accessToken": "true",
   })
   Future<CursorPagination<RestaurantListResItem>> paginate({
-    @Path("after") required String after,
-    @Path("count") required int count,
+    @Queries() PaginationParams? paginationParams = const PaginationParams(),
   });
 
   @GET("/restaurant/{id}")
