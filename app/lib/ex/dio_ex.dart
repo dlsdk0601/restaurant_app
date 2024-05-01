@@ -1,12 +1,9 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:restaurant_app/common/const/api_type.dart';
 import 'package:restaurant_app/common/const/data.dart';
 import 'package:restaurant_app/common/secure_storage/secure_storage.dart';
-import 'package:restaurant_app/restaurant/repository/restaurant_repository.dart';
+import 'package:restaurant_app/ex/data_utils.dart';
 import 'package:restaurant_app/user/repository/user_repository.dart';
 
 final dioProvider = Provider((ref) {
@@ -27,14 +24,6 @@ class CustomInterceptor extends Interceptor {
 
   CustomInterceptor({required this.storage});
 
-  String getBearerHeaderValue(String? token) {
-    return "Bearer $token";
-  }
-
-  Map<String, String> getBearerHeader(String? token) {
-    return {"authorization": getBearerHeaderValue(token)};
-  }
-
   // 요청을 보낼 때
   @override
   void onRequest(
@@ -46,7 +35,7 @@ class CustomInterceptor extends Interceptor {
       // true 값 상관없이 token 이 있든 없든 일단 보내야하는게 맞다.
       options.headers.remove(accessTokenKey);
       final token = await storage.read(key: ACCESS_TOKEN_KEY);
-      options.headers.addAll(getBearerHeader(token));
+      options.headers.addAll(DataUtils.getBearerHeader(token));
     }
     return super.onRequest(options, handler);
   }
@@ -96,90 +85,15 @@ class CustomInterceptor extends Interceptor {
     final dio = Dio();
     final userRepo = UserRepository(dio, baseUrl: ip);
     final res = await userRepo.getToken(
-      token: getBearerHeaderValue(refreshToken),
+      token: DataUtils.getBearerHeaderValue(refreshToken),
     );
 
     final accessToken = res.accessToken;
     final options = err.requestOptions;
-    options.headers.addAll(getBearerHeader(accessToken));
+    options.headers.addAll(DataUtils.getBearerHeader(accessToken));
     await storage.write(key: ACCESS_TOKEN_KEY, value: accessToken);
 
     // 이미 options 안에 왠만한 정보가 다있어서, accessToken 만 바꾸고 다시 날린다.
     return dio.fetch(options);
   }
 }
-
-class DioBase {
-  Codec<String, String> getCodec() {
-    return utf8.fuse(base64);
-  }
-
-  String getBase64(String raw) {
-    return getCodec().encode(raw);
-  }
-
-  String getBasicHeaderValue(String? token) {
-    return "Basic $token";
-  }
-
-  Map<String, String> getBasicHeader(String? token) {
-    return {"authorization": getBasicHeaderValue(token)};
-  }
-}
-
-class DioEx extends DioBase {
-  late final Dio dio;
-  late final UserRepository userRepository;
-  late final RestaurantRepository restaurantRepository;
-
-  DioEx() {
-    dio = Dio(BaseOptions(baseUrl: ip));
-    // dio.interceptors.add(
-    //   CustomInterceptor(storage: storage),
-    // );
-    userRepository = UserRepository(dio, baseUrl: ip);
-    restaurantRepository = RestaurantRepository(dio, baseUrl: ip);
-  }
-
-  post({required String path, required Object? data}) async {
-    return dio.post(path, data: data);
-  }
-
-  get({
-    required String path,
-    Map<String, dynamic>? queryParameters,
-  }) async {
-    return dio.get(
-      path,
-      queryParameters: queryParameters,
-    );
-  }
-
-  Future<SignInRes> signIn({
-    required String userName,
-    required String password,
-  }) async {
-    // login 의 경우 post 요청이 아닌 Basic 방식으로 하기에
-    // 여기만 특별한 경우라서 따로 처리
-    final token = getBase64("$userName:$password");
-    return userRepository.signIn(token: getBasicHeaderValue(token));
-  }
-
-  Future<TokenRes> getAccessToken({required String refreshToken}) async {
-    return userRepository.getToken(token: refreshToken);
-  }
-
-  Future<List<RestaurantListResItem>> getRestaurantList({
-    required String after,
-    required int count,
-  }) async {
-    final res = await restaurantRepository.paginate();
-    return res.data;
-  }
-
-  Future<RestaurantShowRes> restaurantShow({required String id}) async {
-    return restaurantRepository.getRestaurantDetail(id: id);
-  }
-}
-
-final dioEx = DioEx();

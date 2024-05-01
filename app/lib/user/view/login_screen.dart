@@ -1,13 +1,13 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurant_app/common/component/custom_text_form_field.dart';
+import 'package:restaurant_app/common/const/api_type.dart';
 import 'package:restaurant_app/common/const/colors.dart';
 import 'package:restaurant_app/common/const/data.dart';
 import 'package:restaurant_app/common/layout/default_layout.dart';
 import 'package:restaurant_app/common/secure_storage/secure_storage.dart';
 import 'package:restaurant_app/common/view/root_tab.dart';
+import 'package:restaurant_app/ex/data_utils.dart';
 import 'package:restaurant_app/user/repository/user_repository.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -20,6 +20,31 @@ class LoginScreen extends ConsumerStatefulWidget {
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   String userName = '';
   String password = '';
+
+  Future<void> onPressSignIn() async {
+    final token = DataUtils.signInToken("$userName:$password");
+
+    final res = await ref.watch(userRepositoryProvider).signIn(token: token);
+    setToken(res);
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => RootTab(),
+      ),
+    );
+  }
+
+  Future<void> setToken(SignInRes res) async {
+    final storage = ref.read(secureStorageProvider);
+    await storage.write(
+      key: REFRESH_TOKEN_KEY,
+      value: res.refreshToken,
+    );
+    await storage.write(
+      key: ACCESS_TOKEN_KEY,
+      value: res.accessToken,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,30 +99,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   height: 16.0,
                 ),
                 ElevatedButton(
-                  onPressed: () async {
-                    final codec = utf8.fuse(base64);
-                    final token = codec.encode("$userName:$password");
-
-                    final res = await ref
-                        .watch(userRepositoryProvider)
-                        .signIn(token: "Basic $token");
-
-                    final storage = ref.read(secureStorageProvider);
-                    await storage.write(
-                      key: REFRESH_TOKEN_KEY,
-                      value: res.refreshToken,
-                    );
-                    await storage.write(
-                      key: ACCESS_TOKEN_KEY,
-                      value: res.accessToken,
-                    );
-
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => RootTab(),
-                      ),
-                    );
-                  },
+                  onPressed: onPressSignIn,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: PRIMARY_COLOR,
                   ),

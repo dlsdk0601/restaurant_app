@@ -5,7 +5,7 @@ import 'package:restaurant_app/common/const/data.dart';
 import 'package:restaurant_app/common/layout/default_layout.dart';
 import 'package:restaurant_app/common/secure_storage/secure_storage.dart';
 import 'package:restaurant_app/common/view/root_tab.dart';
-import 'package:restaurant_app/ex/dio_ex.dart';
+import 'package:restaurant_app/user/repository/user_repository.dart';
 import 'package:restaurant_app/user/view/login_screen.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -31,7 +31,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     }
 
     try {
-      final res = await dioEx.getAccessToken(refreshToken: refreshToken);
+      final res = await ref
+          .read(userRepositoryProvider)
+          .getToken(token: "Bearer $refreshToken");
 
       // token 이 정상적으로 왔을때
       await storage.write(key: ACCESS_TOKEN_KEY, value: res.accessToken);
