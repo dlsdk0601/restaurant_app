@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurant_app/common/const/api_type.dart';
 import 'package:restaurant_app/common/layout/default_layout.dart';
-import 'package:restaurant_app/ex/dio_ex.dart';
 import 'package:restaurant_app/product/component/product_card.dart';
 import 'package:restaurant_app/restaurant/component/restaurant_card.dart';
+import 'package:restaurant_app/restaurant/repository/restaurant_repository.dart';
 
-class RestaurantDetailScreen extends StatelessWidget {
+class RestaurantDetailScreen extends ConsumerWidget {
   final String id;
 
   const RestaurantDetailScreen({
@@ -13,17 +14,13 @@ class RestaurantDetailScreen extends StatelessWidget {
     required this.id,
   });
 
-  Future<RestaurantShowRes> getRestaurantDetail() async {
-    final res = dioEx.restaurantShow(id: id);
-    return res;
-  }
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return DefaultLayout(
       title: "불타는 떡볶",
       child: FutureBuilder<RestaurantShowRes>(
-        future: getRestaurantDetail(),
+        future:
+            ref.watch(restaurantRepositoryProvider).getRestaurantDetail(id: id),
         builder: (_, AsyncSnapshot<RestaurantShowRes> snapshot) {
           if (snapshot.hasError) {
             return Container(

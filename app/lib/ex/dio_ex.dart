@@ -1,11 +1,24 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:restaurant_app/common/const/api_type.dart';
 import 'package:restaurant_app/common/const/data.dart';
+import 'package:restaurant_app/common/secure_storage/secure_storage.dart';
 import 'package:restaurant_app/restaurant/repository/restaurant_repository.dart';
 import 'package:restaurant_app/user/repository/user_repository.dart';
+
+final dioProvider = Provider((ref) {
+  final dio = Dio(BaseOptions(baseUrl: ip));
+  final storage = ref.watch(secureStorageProvider);
+
+  dio.interceptors.add(
+    CustomInterceptor(storage: storage),
+  );
+
+  return dio;
+});
 
 class CustomInterceptor extends Interceptor {
   final String tokenEndpoint = "/auth/token";
@@ -121,9 +134,9 @@ class DioEx extends DioBase {
 
   DioEx() {
     dio = Dio(BaseOptions(baseUrl: ip));
-    dio.interceptors.add(
-      CustomInterceptor(storage: storage),
-    );
+    // dio.interceptors.add(
+    //   CustomInterceptor(storage: storage),
+    // );
     userRepository = UserRepository(dio, baseUrl: ip);
     restaurantRepository = RestaurantRepository(dio, baseUrl: ip);
   }

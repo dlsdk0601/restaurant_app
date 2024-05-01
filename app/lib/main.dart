@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurant_app/common/view/splash_screen.dart';
 
 void main() async {
@@ -8,7 +9,9 @@ void main() async {
   // env init
   await dotenv.load(fileName: ".env");
   runApp(
-    _App(),
+    ProviderScope(
+      child: _App(),
+    ),
   );
 }
 

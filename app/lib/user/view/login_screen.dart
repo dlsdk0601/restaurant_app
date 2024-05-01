@@ -1,19 +1,23 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurant_app/common/component/custom_text_form_field.dart';
 import 'package:restaurant_app/common/const/colors.dart';
+import 'package:restaurant_app/common/const/data.dart';
 import 'package:restaurant_app/common/layout/default_layout.dart';
+import 'package:restaurant_app/common/secure_storage/secure_storage.dart';
 import 'package:restaurant_app/common/view/root_tab.dart';
-import 'package:restaurant_app/ex/data_utils.dart';
-import 'package:restaurant_app/ex/dio_ex.dart';
+import 'package:restaurant_app/user/repository/user_repository.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   String userName = '';
   String password = '';
 
@@ -71,12 +75,22 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    final res = await dioEx.signIn(
-                      userName: userName,
-                      password: password,
-                    );
+                    final codec = utf8.fuse(base64);
+                    final token = codec.encode("$userName:$password");
 
-                    await DataUtils.setTokenStorage(res);
+                    final res = await ref
+                        .watch(userRepositoryProvider)
+                        .signIn(token: "Basic $token");
+
+                    final storage = ref.read(secureStorageProvider);
+                    await storage.write(
+                      key: REFRESH_TOKEN_KEY,
+                      value: res.refreshToken,
+                    );
+                    await storage.write(
+                      key: ACCESS_TOKEN_KEY,
+                      value: res.accessToken,
+                    );
 
                     Navigator.of(context).push(
                       MaterialPageRoute(

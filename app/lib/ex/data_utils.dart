@@ -9,7 +9,7 @@ class DataUtils {
   static Future<void> setTokenStorage(SignInRes res) async {
     final refreshToken = res.refreshToken;
     final accessToken = res.accessToken;
-    await storage.write(key: REFRESH_TOKEN_KEY, value: refreshToken);
-    await storage.write(key: ACCESS_TOKEN_KEY, value: accessToken);
+    // await storage.write(key: REFRESH_TOKEN_KEY, value: refreshToken);
+    // await storage.write(key: ACCESS_TOKEN_KEY, value: accessToken);
   }
 }
