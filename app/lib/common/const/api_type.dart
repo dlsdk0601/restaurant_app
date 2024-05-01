@@ -3,8 +3,24 @@ import 'package:restaurant_app/ex/data_utils.dart';
 
 part 'api_type.g.dart';
 
+// pagination 기본 class
+abstract class CursorPaginationBase {}
+
+// pagination err 상태 class
+class CursorPaginationError extends CursorPaginationBase {
+  final String message;
+
+  CursorPaginationError({
+    required this.message,
+  });
+}
+
+// pagination loading 상태 class
+class CursorPaginationLoading extends CursorPaginationBase {}
+
+// pagination 성공 상태 class
 @JsonSerializable(genericArgumentFactories: true)
-class CursorPagination<T> {
+class CursorPagination<T> extends CursorPaginationBase {
   final CursorPaginationMeta meta;
   final List<T> data;
 
@@ -24,6 +40,38 @@ class CursorPaginationMeta {
 
   factory CursorPaginationMeta.fromJson(Map<String, dynamic> json) =>
       _$CursorPaginationMetaFromJson(json);
+}
+
+// pagination 새로 고침 위한 class
+class CursorPaginationRefetching<T> extends CursorPagination<T> {
+  CursorPaginationRefetching({
+    required super.meta,
+    required super.data,
+  });
+}
+
+// 무한 스크롤 다음 페이지 faetching 을 위한 클래스
+class CursorPaginationFetchingMore<T> extends CursorPagination<T> {
+  CursorPaginationFetchingMore({
+    required super.meta,
+    required super.data,
+  });
+}
+
+@JsonSerializable()
+class PaginationParams {
+  final String? after;
+  final int? count;
+
+  const PaginationParams({
+    this.after,
+    this.count,
+  });
+
+  factory PaginationParams.fromJson(Map<String, dynamic> json) =>
+      _$PaginationParamsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PaginationParamsToJson(this);
 }
 
 @JsonSerializable()
