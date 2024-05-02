@@ -48,6 +48,13 @@ export class CacheService {
       imageUrl: '/logo/codefactory_logo.png',
       basket: [],
     }),
+    new User({
+      id: 'f55b32d2-4d68-4c1e-a3ca-da9d7d0d92e6',
+      username: 't',
+      password: '1t',
+      imageUrl: '/logo/codefactory_logo.png',
+      basket: [],
+    }),
   ];
 
   orders: Order[] = [];
