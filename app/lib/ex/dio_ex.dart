@@ -30,6 +30,7 @@ class CustomInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
+    print("[REQ] [${options.method}] ${options.uri.toString()}");
     if (options.headers[accessTokenKey] == "true") {
       // 원래는 이런식으로 하지 않는다.
       // true 값 상관없이 token 이 있든 없든 일단 보내야하는게 맞다.
