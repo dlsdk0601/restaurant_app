@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurant_app/common/const/api_type.dart';
 import 'package:restaurant_app/common/layout/default_layout.dart';
 import 'package:restaurant_app/product/component/product_card.dart';
+import 'package:restaurant_app/rating/component/rating_card.dart';
 import 'package:restaurant_app/restaurant/component/restaurant_card.dart';
 import 'package:restaurant_app/restaurant/provider/restaurant_provider.dart';
 import 'package:skeletons/skeletons.dart';
@@ -50,6 +51,19 @@ class _RestaurantDetailScreenState
           if (state is RestaurantShowRes) renderLabel(),
           if (state is RestaurantShowRes)
             renderProducts(products: state.products),
+          const SliverPadding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            sliver: SliverToBoxAdapter(
+              child: RatingCard(
+                rating: 4,
+                email: "test@test.com",
+                images: [],
+                avatarImage: AssetImage("asset/img/logo/codefactory_logo.png"),
+                content:
+                    "굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳",
+              ),
+            ),
+          )
         ],
       ),
     );
