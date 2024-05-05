@@ -207,7 +207,7 @@ class RestaurantShowRes extends RestaurantListResItem {
 @JsonSerializable()
 class UserModel {
   final String id;
-  final String userName;
+  final String username;
   @JsonKey(
     fromJson: DataUtils.pathToUrl,
   )
@@ -215,7 +215,7 @@ class UserModel {
 
   UserModel({
     required this.id,
-    required this.userName,
+    required this.username,
     required this.imageUrl,
   });
 
@@ -227,7 +227,7 @@ class UserModel {
 class RatingModel implements IModelWithId {
   final String id;
   final UserModel user;
-  final String rating;
+  final int rating;
   final String content;
   @JsonKey(
     fromJson: DataUtils.listPathsToUrls,
