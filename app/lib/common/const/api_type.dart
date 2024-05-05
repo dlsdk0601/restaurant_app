@@ -203,3 +203,45 @@ class RestaurantShowRes extends RestaurantListResItem {
   factory RestaurantShowRes.fromJson(Map<String, dynamic> json) =>
       _$RestaurantShowResFromJson(json);
 }
+
+@JsonSerializable()
+class UserModel {
+  final String id;
+  final String userName;
+  @JsonKey(
+    fromJson: DataUtils.pathToUrl,
+  )
+  final String imageUrl;
+
+  UserModel({
+    required this.id,
+    required this.userName,
+    required this.imageUrl,
+  });
+
+  factory UserModel.fromJson(Map<String, dynamic> json) =>
+      _$UserModelFromJson(json);
+}
+
+@JsonSerializable()
+class RatingModel {
+  final String id;
+  final UserModel user;
+  final String rating;
+  final String content;
+  @JsonKey(
+    fromJson: DataUtils.listPathsToUrls,
+  )
+  final List<String> imgUrls;
+
+  RatingModel({
+    required this.id,
+    required this.user,
+    required this.rating,
+    required this.content,
+    required this.imgUrls,
+  });
+
+  factory RatingModel.fromJson(Map<String, dynamic> json) =>
+      _$RatingModelFromJson(json);
+}
