@@ -4,8 +4,12 @@ import 'package:restaurant_app/common/const/api_type.dart';
 import 'package:restaurant_app/common/const/data.dart';
 
 class DataUtils {
-  static pathToUrl(String value) {
+  static String pathToUrl(String value) {
     return "${ip}${value}";
+  }
+
+  static List<String> listPathsToUrls(List<String> paths) {
+    return paths.map((e) => pathToUrl(e)).toList();
   }
 
   static Future<void> setTokenStorage(SignInRes res) async {
