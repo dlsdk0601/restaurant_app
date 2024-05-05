@@ -35,8 +35,6 @@ class _RestaurantDetailScreenState
   Widget build(BuildContext context) {
     final state = ref.watch(restaurantDetailProvider(widget.id));
     final ratingsState = ref.watch(restaurantRatingProvider(widget.id));
-    print("ratingsState");
-    print(ratingsState);
 
     if (state == null) {
       return const DefaultLayout(
@@ -55,20 +53,28 @@ class _RestaurantDetailScreenState
           if (state is RestaurantShowRes) renderLabel(),
           if (state is RestaurantShowRes)
             renderProducts(products: state.products),
-          const SliverPadding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
-            sliver: SliverToBoxAdapter(
-              child: RatingCard(
-                rating: 4,
-                email: "test@test.com",
-                images: [],
-                avatarImage: AssetImage("asset/img/logo/codefactory_logo.png"),
-                content:
-                    "굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳굳",
-              ),
-            ),
-          )
+          if (ratingsState is CursorPagination<RatingModel>)
+            renderRatings(
+              models: ratingsState.data,
+            )
         ],
+      ),
+    );
+  }
+
+  SliverPadding renderRatings({required List<RatingModel> models}) {
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate(
+          childCount: models.length,
+          (_, index) => Padding(
+            padding: const EdgeInsets.only(bottom: 16.0),
+            child: RatingCard.fromModel(
+              model: models[index],
+            ),
+          ),
+        ),
       ),
     );
   }
