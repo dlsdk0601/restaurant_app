@@ -109,6 +109,7 @@ class PaginationProvider<T extends IModelWithId,
         state = res.copyWith(
           data: [...pState.data, ...res.data],
         );
+        return;
       } else {
         // 맨 처음 or 강제 재시작이라서 res 를 그대로 담는다.
         state = res;
