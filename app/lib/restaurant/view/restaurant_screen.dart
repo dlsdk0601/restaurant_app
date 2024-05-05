@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurant_app/common/const/api_type.dart';
+import 'package:restaurant_app/ex/data_utils.dart';
 import 'package:restaurant_app/restaurant/component/restaurant_card.dart';
 import 'package:restaurant_app/restaurant/provider/restaurant_provider.dart';
 import 'package:restaurant_app/restaurant/view/restaurant_detail_screen.dart';
@@ -23,16 +24,10 @@ class _RestaurantScreenState extends ConsumerState<RestaurantScreen> {
   }
 
   void scrollListener() {
-    // 현재 위치가 최대 길이 보다 덜 되는 위치 까지 왔다면
-    // 다음 페이지 fetch
-
-    // controller.offset => 현재 스크롤
-    // controller.position.maxScrollExtent => 스크롤 할 수 있는 최대 스크롤
-    if (controller.offset > controller.position.maxScrollExtent - 300) {
-      ref.read(restaurantProvider.notifier).paginate(
-            fetchMore: true,
-          );
-    }
+    DataUtils.paginateInit(
+      controller: controller,
+      provider: ref.read(restaurantProvider.notifier),
+    );
   }
 
   @override
