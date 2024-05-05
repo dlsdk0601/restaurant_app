@@ -128,7 +128,7 @@ class TokenRes {
 enum RestaurantPriceRange { cheap, medium, expensive }
 
 @JsonSerializable()
-class RestaurantListResItem {
+class RestaurantListResItem implements IModelWithId {
   final String id; // "1952a209-7c26-4f50-bc65-086f6e64dbbd",
   final String name; // "우라나라에서 가장 맛있는 짜장면집",
   @JsonKey(
@@ -224,7 +224,7 @@ class UserModel {
 }
 
 @JsonSerializable()
-class RatingModel {
+class RatingModel implements IModelWithId {
   final String id;
   final UserModel user;
   final String rating;
@@ -244,4 +244,12 @@ class RatingModel {
 
   factory RatingModel.fromJson(Map<String, dynamic> json) =>
       _$RatingModelFromJson(json);
+}
+
+abstract class IModelWithId {
+  final String id;
+
+  IModelWithId({
+    required this.id,
+  });
 }
