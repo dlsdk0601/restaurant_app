@@ -8,7 +8,9 @@ class DataUtils {
     return "${ip}${value}";
   }
 
-  static List<String> listPathsToUrls(List<String> paths) {
+  // parameter 가 List<String> 으로 하지 않은 이유는 API 에서 받을때는 List<dynamic> 으로 인식하기 때문에
+  // 타입 에러가 난다.
+  static List<String> listPathsToUrls(List paths) {
     return paths.map((e) => pathToUrl(e)).toList();
   }
 
