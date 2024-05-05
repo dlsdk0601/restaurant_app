@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:restaurant_app/common/const/api_type.dart';
 import 'package:restaurant_app/common/const/colors.dart';
 
 class RatingCard extends StatelessWidget {
@@ -22,6 +23,19 @@ class RatingCard extends StatelessWidget {
     required this.email,
     required this.content,
   });
+
+  factory RatingCard.fromModel({
+    required RatingModel model,
+  }) =>
+      RatingCard(
+        avatarImage: NetworkImage(
+          model.user.imageUrl,
+        ),
+        images: model.imgUrls.map((e) => Image.network(e)).toList(),
+        rating: model.rating,
+        email: model.user.username,
+        content: model.content,
+      );
 
   @override
   Widget build(BuildContext context) {
