@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:restaurant_app/common/const/api_type.dart';
 import 'package:restaurant_app/common/const/data.dart';
+import 'package:restaurant_app/common/provider/pagination_provider.dart';
 
 class DataUtils {
   static String pathToUrl(String value) {
@@ -12,6 +14,22 @@ class DataUtils {
   // 타입 에러가 난다.
   static List<String> listPathsToUrls(List paths) {
     return paths.map((e) => pathToUrl(e)).toList();
+  }
+
+  static void paginateInit({
+    required ScrollController controller,
+    required PaginationProvider provider,
+  }) {
+    // 현재 위치가 최대 길이 보다 덜 되는 위치 까지 왔다면
+    // 다음 페이지 fetch
+
+    // controller.offset => 현재 스크롤
+    // controller.position.maxScrollExtent => 스크롤 할 수 있는 최대 스크롤
+    if (controller.offset > controller.position.maxScrollExtent - 300) {
+      provider.paginate(
+        fetchMore: true,
+      );
+    }
   }
 
   static Future<void> setTokenStorage(SignInRes res) async {
