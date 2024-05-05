@@ -11,7 +11,9 @@ class PaginationProvider<T extends IModelWithId,
     required this.repository,
   }) : super(
           CursorPaginationLoading(),
-        );
+        ) {
+    paginate();
+  }
 
   Future<void> paginate({
     int fetchCount = 20,

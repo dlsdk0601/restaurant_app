@@ -4,6 +4,7 @@ import 'package:restaurant_app/common/const/api_type.dart';
 import 'package:restaurant_app/common/layout/default_layout.dart';
 import 'package:restaurant_app/product/component/product_card.dart';
 import 'package:restaurant_app/rating/component/rating_card.dart';
+import 'package:restaurant_app/rating/provider/restaurant_rating_provider.dart';
 import 'package:restaurant_app/restaurant/component/restaurant_card.dart';
 import 'package:restaurant_app/restaurant/provider/restaurant_provider.dart';
 import 'package:skeletons/skeletons.dart';
@@ -33,6 +34,9 @@ class _RestaurantDetailScreenState
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(restaurantDetailProvider(widget.id));
+    final ratingsState = ref.watch(restaurantRatingProvider(widget.id));
+    print("ratingsState");
+    print(ratingsState);
 
     if (state == null) {
       return const DefaultLayout(
