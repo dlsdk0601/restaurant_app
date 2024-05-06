@@ -16,7 +16,23 @@ class ProductCard extends StatelessWidget {
     required this.price,
   });
 
-  factory ProductCard.fromModel({required RestaurantMenuItem model}) {
+  factory ProductCard.fromProductModel({
+    required ProductModel model,
+  }) =>
+      ProductCard(
+        image: Image.network(
+          model.imgUrl,
+          width: 110,
+          height: 110,
+          fit: BoxFit.cover,
+        ),
+        name: model.name,
+        detail: model.detail,
+        price: model.price,
+      );
+
+  factory ProductCard.fromRestaurantProductModel(
+      {required RestaurantMenuItem model}) {
     return ProductCard(
       image: Image.network(
         model.imgUrl,
