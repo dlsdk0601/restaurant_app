@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:restaurant_app/common/const/colors.dart';
 import 'package:restaurant_app/common/layout/default_layout.dart';
+import 'package:restaurant_app/product/view/product_tab.dart';
 
 import '../../restaurant/view/restaurant_screen.dart';
 
@@ -13,6 +14,7 @@ class RootTab extends StatefulWidget {
 
 class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
   int index = 0;
+
   // late => 나중에 선언 될거다
   late TabController tabController;
 
@@ -47,25 +49,6 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return DefaultLayout(
       title: "딜리버리",
-      child: TabBarView(
-        // default 가 좌우로 스크롤 하면 tab 이 바뀌는 구조인데,
-        // 위아래 스크롤 넣을거기 때문에 ux 상 불편해서
-        // 기본 스크롤을 없애기 위해 NeverScrollableScrollPhysics 추가
-        physics: NeverScrollableScrollPhysics(),
-        controller: tabController,
-        children: [
-          RestaurantScreen(),
-          Container(
-            child: Center(child: Text("음식")),
-          ),
-          Container(
-            child: Center(child: Text("주문")),
-          ),
-          Container(
-            child: Center(child: Text("프로필")),
-          )
-        ],
-      ),
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: PRIMARY_COLOR,
         unselectedItemColor: BODY_TEXT_COLOR,
@@ -81,7 +64,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
         // 아래 코드가 안되는 이유는 tabcontroller 의 index 가 바뀌긴 하지만, rendering 이 다시 되지 않아서 그렇다.
         // currentIndex: tabController.index,
         currentIndex: index,
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),
             label: "홈",
@@ -98,6 +81,23 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
             icon: Icon(Icons.person_outline),
             label: "프로필",
           ),
+        ],
+      ),
+      child: TabBarView(
+        // default 가 좌우로 스크롤 하면 tab 이 바뀌는 구조인데,
+        // 위아래 스크롤 넣을거기 때문에 ux 상 불편해서
+        // 기본 스크롤을 없애기 위해 NeverScrollableScrollPhysics 추가
+        physics: NeverScrollableScrollPhysics(),
+        controller: tabController,
+        children: [
+          RestaurantScreen(),
+          ProductTab(),
+          Container(
+            child: Center(child: Text("주문")),
+          ),
+          Container(
+            child: Center(child: Text("프로필")),
+          )
         ],
       ),
     );
