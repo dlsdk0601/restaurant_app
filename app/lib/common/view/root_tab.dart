@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:restaurant_app/common/const/colors.dart';
 import 'package:restaurant_app/common/layout/default_layout.dart';
-import 'package:restaurant_app/product/view/product_tab.dart';
+import 'package:restaurant_app/product/view/product_screen.dart';
 
 import '../../restaurant/view/restaurant_screen.dart';
 
