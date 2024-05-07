@@ -22,6 +22,12 @@ class RootScreen extends StatelessWidget {
             },
             child: const Text("Go Named"),
           ),
+          ElevatedButton(
+            onPressed: () {
+              context.go("/push");
+            },
+            child: const Text("Go Push"),
+          ),
         ],
       ),
     );
