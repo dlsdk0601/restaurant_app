@@ -6,6 +6,8 @@ import 'package:gorouter/screens/4_pop_base_screen.dart';
 import 'package:gorouter/screens/5_pop_return_screen.dart';
 import 'package:gorouter/screens/6_path_param_screen.dart';
 import 'package:gorouter/screens/7_query_parameter_screen.dart';
+import 'package:gorouter/screens/8_nested_child_screen.dart';
+import 'package:gorouter/screens/8_nested_screen.dart';
 import 'package:gorouter/screens/root_screen.dart';
 
 final router = GoRouter(
@@ -52,7 +54,31 @@ final router = GoRouter(
         GoRoute(
           path: "query_param",
           builder: (context, state) => const QueryParameterScreen(),
-        )
+        ),
+        ShellRoute(
+          // child => react 의 children 과 비슷
+          builder: (context, state, child) => NestedScreen(child: child),
+          routes: [
+            GoRoute(
+              // /nested/a
+              path: "nested/a",
+              builder: (context, state) =>
+                  const NestedChildScreen(routerName: "/nested/a"),
+            ),
+            GoRoute(
+              // /nested/b
+              path: "nested/b",
+              builder: (context, state) =>
+                  const NestedChildScreen(routerName: "/nested/b"),
+            ),
+            GoRoute(
+              // /nested/c
+              path: "nested/c",
+              builder: (context, state) =>
+                  const NestedChildScreen(routerName: "/nested/c"),
+            ),
+          ],
+        ),
       ],
     ),
   ],
