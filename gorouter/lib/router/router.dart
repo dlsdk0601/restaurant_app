@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gorouter/screens/10_transition_screen_1.dart';
+import 'package:gorouter/screens/11_error_screen.dart';
 import 'package:gorouter/screens/1_basic_screen.dart';
 import 'package:gorouter/screens/2_named_screen.dart';
 import 'package:gorouter/screens/3_push_screen.dart';
@@ -153,4 +154,6 @@ final router = GoRouter(
       ],
     ),
   ],
+  // 특별히 다른 에러는 아니고 go_router 에서 에러가 발생 시, 이동되는 에러 페이지
+  errorBuilder: (context, state) => ErrorScreen(error: state.error.toString()),
 );
