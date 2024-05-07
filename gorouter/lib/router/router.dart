@@ -8,9 +8,24 @@ import 'package:gorouter/screens/6_path_param_screen.dart';
 import 'package:gorouter/screens/7_query_parameter_screen.dart';
 import 'package:gorouter/screens/8_nested_child_screen.dart';
 import 'package:gorouter/screens/8_nested_screen.dart';
+import 'package:gorouter/screens/9_login_screen.dart';
+import 'package:gorouter/screens/9_private_screen.dart';
 import 'package:gorouter/screens/root_screen.dart';
 
+// 로그인 여부
+bool authState = false;
+
 final router = GoRouter(
+  // 전역 으로 적용, 어디로든 route 이동 할 때 마다 실행
+  redirect: (context, state) {
+    // return String => String 에 해당하는 path route 로 이동
+    // return null => 원래 이동하려던 route 로 이
+    if (state.uri.path == "/login/private" && !authState) {
+      return "/login";
+    }
+
+    return null;
+  },
   routes: [
     GoRoute(
       path: "/",
@@ -77,6 +92,33 @@ final router = GoRouter(
               builder: (context, state) =>
                   const NestedChildScreen(routerName: "/nested/c"),
             ),
+          ],
+        ),
+        GoRoute(
+          path: "login",
+          builder: (context, state) => const LoginScreen(),
+          routes: [
+            GoRoute(
+              path: "private",
+              builder: (context, state) => const PrivateScreen(),
+            ),
+          ],
+        ),
+        GoRoute(
+          path: "login2",
+          builder: (context, state) => const LoginScreen(),
+          routes: [
+            GoRoute(
+                path: "private",
+                builder: (context, state) => const PrivateScreen(),
+                // 지역 route, /login2/private 로 이동 할때만 실행 되는 콜백
+                redirect: (context, state) {
+                  if (!authState) {
+                    return "/login2";
+                  }
+
+                  return null;
+                }),
           ],
         ),
       ],
