@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gorouter/screens/10_transition_screen_1.dart';
 import 'package:gorouter/screens/1_basic_screen.dart';
 import 'package:gorouter/screens/2_named_screen.dart';
 import 'package:gorouter/screens/3_push_screen.dart';
@@ -11,6 +13,8 @@ import 'package:gorouter/screens/8_nested_screen.dart';
 import 'package:gorouter/screens/9_login_screen.dart';
 import 'package:gorouter/screens/9_private_screen.dart';
 import 'package:gorouter/screens/root_screen.dart';
+
+import '../screens/10_transition_screen_2.dart';
 
 // 로그인 여부
 bool authState = false;
@@ -121,6 +125,31 @@ final router = GoRouter(
                 }),
           ],
         ),
+        GoRoute(
+            path: "transition",
+            builder: (context, state) => const TransitionScreenOne(),
+            routes: [
+              GoRoute(
+                path: "detail",
+                pageBuilder: (_, state) => CustomTransitionPage(
+                  // trasition 시간
+                  transitionDuration: const Duration(seconds: 3),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    // animation => 0 -> 1 까지 점점 밝아짐
+                    // secondaryAnimation => animation 의 반대로
+                    // ScaleTransition => scale 에 transition 걸린다.
+                    // FadeTransition => fade in out 효과
+                    // RorationTransition => 회전 효과
+                    return FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    );
+                  },
+                  child: const TransitionScreenTwo(),
+                ),
+              ),
+            ])
       ],
     ),
   ],
