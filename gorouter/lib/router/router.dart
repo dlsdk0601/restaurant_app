@@ -156,4 +156,6 @@ final router = GoRouter(
   ],
   // 특별히 다른 에러는 아니고 go_router 에서 에러가 발생 시, 이동되는 에러 페이지
   errorBuilder: (context, state) => ErrorScreen(error: state.error.toString()),
+  // route 에 대한 log 활성화
+  debugLogDiagnostics: true,
 );
