@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:restaurant_app/common/component/custom_text_form_field.dart';
 import 'package:restaurant_app/common/const/api_type.dart';
 import 'package:restaurant_app/common/const/colors.dart';
-import 'package:restaurant_app/common/const/data.dart';
 import 'package:restaurant_app/common/layout/default_layout.dart';
-import 'package:restaurant_app/common/secure_storage/secure_storage.dart';
-import 'package:restaurant_app/common/view/root_tab.dart';
-import 'package:restaurant_app/user/repository/auth_repository.dart';
+import 'package:restaurant_app/user/provider/user_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   static String get routerName => "login";
@@ -22,33 +20,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   String userName = '';
   String password = '';
 
-  Future<void> onPressSignIn() async {
+  Future<void> onPressSignIn(BuildContext context) async {
     final res = await ref
-        .watch(authRepositoryProvider)
+        .read(userProvider.notifier)
         .login(username: userName, password: password);
-    setToken(res);
 
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => RootTab(),
-      ),
-    );
-  }
-
-  Future<void> setToken(SignInRes res) async {
-    final storage = ref.read(secureStorageProvider);
-    await storage.write(
-      key: REFRESH_TOKEN_KEY,
-      value: res.refreshToken,
-    );
-    await storage.write(
-      key: ACCESS_TOKEN_KEY,
-      value: res.accessToken,
-    );
+    if (context.mounted) {
+      context.go("/");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(userProvider);
+
     return DefaultLayout(
       child: SingleChildScrollView(
         /*
@@ -100,7 +85,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   height: 16.0,
                 ),
                 ElevatedButton(
-                  onPressed: onPressSignIn,
+                  onPressed: state is UserModelLoading
+                      ? null
+                      : () => onPressSignIn(context),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: PRIMARY_COLOR,
                   ),
