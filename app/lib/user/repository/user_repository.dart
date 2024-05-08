@@ -19,13 +19,19 @@ final userRepositoryProvider = Provider<UserRepository>((ref) {
 abstract class UserRepository {
   factory UserRepository(Dio dio, {String baseUrl}) = _UserRepository;
 
-  @POST("/auth/login")
-  Future<SignInRes> signIn({
-    @Header("authorization") required String token,
-  });
+  @GET("/user/me")
+  @Headers({
+    "accessToken": "true",
+  })
+  Future<UserModel> getMe();
 
-  @POST("/auth/token")
-  Future<TokenRes> getToken({
-    @Header("authorization") required String token,
-  });
+// @POST("/auth/login")
+// Future<SignInRes> signIn({
+//   @Header("authorization") required String token,
+// });
+//
+// @POST("/auth/token")
+// Future<TokenRes> getToken({
+//   @Header("authorization") required String token,
+// });
 }
