@@ -4,7 +4,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:restaurant_app/common/const/data.dart';
 import 'package:restaurant_app/common/secure_storage/secure_storage.dart';
 import 'package:restaurant_app/ex/data_utils.dart';
-import 'package:restaurant_app/user/repository/user_repository.dart';
+
+import '../common/const/api_type.dart';
 
 final dioProvider = Provider((ref) {
   final dio = Dio(BaseOptions(baseUrl: ip));
@@ -20,6 +21,7 @@ final dioProvider = Provider((ref) {
 class CustomInterceptor extends Interceptor {
   final String tokenEndpoint = "/auth/token";
   final String accessTokenKey = "accessToken";
+  final String refreshTokenKey = "refreshToken";
   final FlutterSecureStorage storage;
 
   CustomInterceptor({required this.storage});
@@ -39,6 +41,14 @@ class CustomInterceptor extends Interceptor {
       print("[TOKEN] : $token");
       options.headers.addAll(DataUtils.getBearerHeader(token));
     }
+
+    if (options.headers[refreshTokenKey] == "true") {
+      options.headers.remove(refreshTokenKey);
+      final refreshToken = await storage.read(key: REFRESH_TOKEN_KEY);
+      print("[REFRESH TOKEN] : $refreshToken");
+      options.headers.addAll(DataUtils.getBearerHeader(refreshToken));
+    }
+
     return super.onRequest(options, handler);
   }
 
@@ -87,10 +97,14 @@ class CustomInterceptor extends Interceptor {
   ) async {
     // header 에 새로 셋팅해주기 위해 새로운 dio 로 인스턴스 빼준다.
     final dio = Dio();
-    final userRepo = UserRepository(dio, baseUrl: ip);
-    final res = await userRepo.getToken(
-      token: DataUtils.getBearerHeaderValue(refreshToken),
+    final resp = await dio.post(
+      "$ip/auth/token",
+      options: Options(
+        headers: DataUtils.getBearerHeader(refreshToken),
+      ),
     );
+
+    final res = TokenRes.fromJson(resp.data);
 
     final accessToken = res.accessToken;
     final options = err.requestOptions;
