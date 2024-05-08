@@ -35,6 +35,7 @@ class AuthProvider extends ChangeNotifier {
           routes: [
             GoRoute(
               path: "restaurant/:rid",
+              name: RestaurantDetailScreen.routerName,
               builder: (_, state) => RestaurantDetailScreen(
                 id: state.pathParameters["rid"]!,
               ),
@@ -82,5 +83,9 @@ class AuthProvider extends ChangeNotifier {
 
     // 나머지는 원래 가던대로 가라
     return null;
+  }
+
+  logout() {
+    ref.read(userProvider.notifier).logout();
   }
 }
