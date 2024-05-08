@@ -4,6 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:restaurant_app/common/const/data.dart';
 import 'package:restaurant_app/common/secure_storage/secure_storage.dart';
 import 'package:restaurant_app/ex/data_utils.dart';
+import 'package:restaurant_app/user/provider/auth_provider.dart';
 
 import '../common/const/api_type.dart';
 
@@ -12,7 +13,7 @@ final dioProvider = Provider((ref) {
   final storage = ref.watch(secureStorageProvider);
 
   dio.interceptors.add(
-    CustomInterceptor(storage: storage),
+    CustomInterceptor(storage: storage, ref: ref),
   );
 
   return dio;
@@ -23,8 +24,12 @@ class CustomInterceptor extends Interceptor {
   final String accessTokenKey = "accessToken";
   final String refreshTokenKey = "refreshToken";
   final FlutterSecureStorage storage;
+  final Ref ref;
 
-  CustomInterceptor({required this.storage});
+  CustomInterceptor({
+    required this.storage,
+    required this.ref,
+  });
 
   // 요청을 보낼 때
   @override
@@ -83,6 +88,12 @@ class CustomInterceptor extends Interceptor {
         // err 를 뱉지 말고 다시 resolve 한다.
         return handler.resolve(r);
       } on DioException catch (e) {
+        // logout 시킨다.
+        // userProvider 가져와서 logout 하면
+        // circular dependency 에러가 난다.
+        // 왜냐하면 provider 에서 dio 를 받아서 사용 하기 때문
+        // 그래서 authProvider 에서 userProvider 를 받고 여기서는 authProvider 를 받는다.
+        ref.read(authProvider.notifier).logout();
         return handler.reject(e);
       }
     }
