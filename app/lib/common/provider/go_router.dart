@@ -3,7 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:restaurant_app/user/provider/auth_provider.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final provider = ref.watch(authProvider);
+  // go router 는 한번만 읽으면 됨.
+  final provider = ref.read(authProvider);
 
   return GoRouter(
     routes: provider.routes,
