@@ -64,4 +64,8 @@ class DataUtils {
   static Map<String, String> getBearerHeader(String? token) {
     return {"authorization": getBearerHeaderValue(token)};
   }
+
+  static Map<String, String> getBasicHeader(String token) {
+    return {"authorization": signInToken(token)};
+  }
 }
