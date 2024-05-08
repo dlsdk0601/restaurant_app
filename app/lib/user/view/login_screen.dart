@@ -7,10 +7,11 @@ import 'package:restaurant_app/common/const/data.dart';
 import 'package:restaurant_app/common/layout/default_layout.dart';
 import 'package:restaurant_app/common/secure_storage/secure_storage.dart';
 import 'package:restaurant_app/common/view/root_tab.dart';
-import 'package:restaurant_app/ex/data_utils.dart';
-import 'package:restaurant_app/user/repository/user_repository.dart';
+import 'package:restaurant_app/user/repository/auth_repository.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
+  static String get routerName => "login";
+
   const LoginScreen({super.key});
 
   @override
@@ -22,9 +23,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   String password = '';
 
   Future<void> onPressSignIn() async {
-    final token = DataUtils.signInToken("$userName:$password");
-
-    final res = await ref.watch(userRepositoryProvider).signIn(token: token);
+    final res = await ref
+        .watch(authRepositoryProvider)
+        .login(username: userName, password: password);
     setToken(res);
 
     Navigator.of(context).push(
