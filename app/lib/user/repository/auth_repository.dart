@@ -25,12 +25,10 @@ class AuthRepository {
     required String username,
     required String password,
   }) async {
-    final serialized = DataUtils.signInToken("$username:$password");
-
     final res = await dio.post(
       "$baseUrl/auth/login",
       options: Options(
-        headers: DataUtils.getBasicHeader(serialized),
+        headers: DataUtils.getBasicHeader("$username:$password"),
       ),
     );
 
