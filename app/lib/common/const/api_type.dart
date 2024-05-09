@@ -291,3 +291,49 @@ class ProductModel implements IModelWithId {
   factory ProductModel.fromJson(Map<String, dynamic> json) =>
       _$ProductModelFromJson(json);
 }
+
+@JsonSerializable()
+class BasketItemModel {
+  final ProductModel product;
+  final int count;
+
+  BasketItemModel({
+    required this.product,
+    required this.count,
+  });
+
+  BasketItemModel copyWith({ProductModel? product, int? count}) {
+    return BasketItemModel(
+        product: product ?? this.product, count: count ?? this.count);
+  }
+
+  factory BasketItemModel.fromJson(Map<String, dynamic> json) =>
+      _$BasketItemModelFromJson(json);
+}
+
+@JsonSerializable()
+class PatchBasketBody {
+  final List<PatchBasketBodyBasket> basket;
+
+  PatchBasketBody({
+    required this.basket,
+  });
+
+  Map<String, dynamic> toJson() => _$PatchBasketBodyToJson(this);
+}
+
+@JsonSerializable()
+class PatchBasketBodyBasket {
+  final String productId;
+  final int count;
+
+  PatchBasketBodyBasket({
+    required this.productId,
+    required this.count,
+  });
+
+  factory PatchBasketBodyBasket.fromJson(Map<String, dynamic> json) =>
+      _$PatchBasketBodyBasketFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PatchBasketBodyBasketToJson(this);
+}
