@@ -1,6 +1,7 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart' hide Badge;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:restaurant_app/common/const/api_type.dart';
 import 'package:restaurant_app/common/const/colors.dart';
 import 'package:restaurant_app/common/layout/default_layout.dart';
@@ -10,6 +11,7 @@ import 'package:restaurant_app/rating/component/rating_card.dart';
 import 'package:restaurant_app/rating/provider/restaurant_rating_provider.dart';
 import 'package:restaurant_app/restaurant/component/restaurant_card.dart';
 import 'package:restaurant_app/restaurant/provider/restaurant_provider.dart';
+import 'package:restaurant_app/restaurant/view/basket_Screen.dart';
 import 'package:restaurant_app/user/provider/basket_provider.dart';
 import 'package:skeletons/skeletons.dart';
 
@@ -63,7 +65,9 @@ class _RestaurantDetailScreenState
     return DefaultLayout(
       title: "불타는 떡볶",
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          context.pushNamed(BasketScreen.routerName);
+        },
         backgroundColor: PRIMARY_COLOR,
         child: Badge(
           showBadge: basket.isNotEmpty,
