@@ -11,7 +11,7 @@ import 'package:restaurant_app/rating/component/rating_card.dart';
 import 'package:restaurant_app/rating/provider/restaurant_rating_provider.dart';
 import 'package:restaurant_app/restaurant/component/restaurant_card.dart';
 import 'package:restaurant_app/restaurant/provider/restaurant_provider.dart';
-import 'package:restaurant_app/restaurant/view/basket_Screen.dart';
+import 'package:restaurant_app/restaurant/view/basket_screen.dart';
 import 'package:restaurant_app/user/provider/basket_provider.dart';
 import 'package:skeletons/skeletons.dart';
 
