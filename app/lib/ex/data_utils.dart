@@ -68,4 +68,8 @@ class DataUtils {
   static Map<String, String> getBasicHeader(String token) {
     return {"authorization": signInToken(token)};
   }
+
+  static DateTime stringToDateTime(String value) {
+    return DateTime.parse(value);
+  }
 }
