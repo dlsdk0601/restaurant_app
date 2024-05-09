@@ -1,6 +1,8 @@
-import 'package:flutter/material.dart';
+import 'package:badges/badges.dart';
+import 'package:flutter/material.dart' hide Badge;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurant_app/common/const/api_type.dart';
+import 'package:restaurant_app/common/const/colors.dart';
 import 'package:restaurant_app/common/layout/default_layout.dart';
 import 'package:restaurant_app/ex/data_utils.dart';
 import 'package:restaurant_app/product/component/product_card.dart';
@@ -8,6 +10,7 @@ import 'package:restaurant_app/rating/component/rating_card.dart';
 import 'package:restaurant_app/rating/provider/restaurant_rating_provider.dart';
 import 'package:restaurant_app/restaurant/component/restaurant_card.dart';
 import 'package:restaurant_app/restaurant/provider/restaurant_provider.dart';
+import 'package:restaurant_app/user/provider/basket_provider.dart';
 import 'package:skeletons/skeletons.dart';
 
 class RestaurantDetailScreen extends ConsumerStatefulWidget {
@@ -47,6 +50,7 @@ class _RestaurantDetailScreenState
   Widget build(BuildContext context) {
     final state = ref.watch(restaurantDetailProvider(widget.id));
     final ratingsState = ref.watch(restaurantRatingProvider(widget.id));
+    final basket = ref.watch(basketProvider);
 
     if (state == null) {
       return const DefaultLayout(
@@ -58,6 +62,19 @@ class _RestaurantDetailScreenState
 
     return DefaultLayout(
       title: "불타는 떡볶",
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        backgroundColor: PRIMARY_COLOR,
+        child: Badge(
+          showBadge: basket.isNotEmpty,
+          badgeContent: Text(
+            basket.fold(0, (prev, next) => prev + next.count).toString(),
+            style: const TextStyle(color: PRIMARY_COLOR, fontSize: 10.0),
+          ),
+          badgeStyle: const BadgeStyle(badgeColor: Colors.white),
+          child: const Icon(Icons.shopping_basket_outlined),
+        ),
+      ),
       child: CustomScrollView(
         controller: controller,
         slivers: [
@@ -65,7 +82,10 @@ class _RestaurantDetailScreenState
           if (state is! RestaurantShowRes) renderLoading(),
           if (state is RestaurantShowRes) renderLabel(),
           if (state is RestaurantShowRes)
-            renderProducts(products: state.products),
+            renderProducts(
+              products: state.products,
+              restaurant: state,
+            ),
           if (ratingsState is CursorPagination<RatingModel>)
             renderRatings(
               models: ratingsState.data,
@@ -101,7 +121,10 @@ class _RestaurantDetailScreenState
     );
   }
 
-  SliverPadding renderProducts({required List<RestaurantMenuItem> products}) {
+  SliverPadding renderProducts({
+    required List<RestaurantMenuItem> products,
+    required RestaurantListResItem restaurant,
+  }) {
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       sliver: SliverList(
@@ -109,9 +132,25 @@ class _RestaurantDetailScreenState
           (context, index) {
             final model = products[index];
 
-            return Padding(
-              padding: const EdgeInsets.only(top: 16.0),
-              child: ProductCard.fromRestaurantProductModel(model: model),
+            // GestureDetector 는 onTap 이 동작 하지만 애니메이션이 없다.
+            // InkWell 은 tap 할 경우 애니메이션 효과가 있음.
+            return InkWell(
+              onTap: () {
+                ref.read(basketProvider.notifier).addToBasket(
+                      product: ProductModel(
+                        id: model.id,
+                        name: model.name,
+                        detail: model.detail,
+                        imgUrl: model.imgUrl,
+                        price: model.price,
+                        restaurant: restaurant,
+                      ),
+                    );
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: ProductCard.fromRestaurantProductModel(model: model),
+              ),
             );
           },
           childCount: products.length,
