@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:restaurant_app/common/const/api_type.dart';
 import 'package:restaurant_app/common/view/root_tab.dart';
 import 'package:restaurant_app/common/view/splash_screen.dart';
+import 'package:restaurant_app/restaurant/view/basket_Screen.dart';
 import 'package:restaurant_app/restaurant/view/restaurant_detail_screen.dart';
 import 'package:restaurant_app/user/provider/user_provider.dart';
 import 'package:restaurant_app/user/view/login_screen.dart';
@@ -41,6 +42,11 @@ class AuthProvider extends ChangeNotifier {
               ),
             ),
           ],
+        ),
+        GoRoute(
+          path: "/basket",
+          name: BasketScreen.routerName,
+          builder: (_, state) => BasketScreen(),
         ),
         GoRoute(
           path: "/splash",
