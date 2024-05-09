@@ -25,13 +25,13 @@ abstract class UserRepository {
   })
   Future<UserModel> getMe();
 
-// @POST("/auth/login")
-// Future<SignInRes> signIn({
-//   @Header("authorization") required String token,
-// });
-//
-// @POST("/auth/token")
-// Future<TokenRes> getToken({
-//   @Header("authorization") required String token,
-// });
+  @GET("/user/me/basket")
+  @Headers({"accessToken": "true"})
+  Future<List<BasketItemModel>> getBasket();
+
+  @PATCH("/user/me/basket")
+  @Headers({"accessToken": "true"})
+  Future<List<BasketItemModel>> patchBasket({
+    @Body() required PatchBasketBody body,
+  });
 }
