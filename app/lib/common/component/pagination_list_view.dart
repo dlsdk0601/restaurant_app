@@ -99,34 +99,43 @@ class _PaginationListViewState<T extends IModelWithId>
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: ListView.separated(
-        controller: controller,
-        // +1 해준 이유는 로딩 때문에 로딩 그릴 한칸의 자리를 더 만든다.
-        itemCount: cp.data.length + 1,
-        itemBuilder: (_, index) {
-          if (index == cp.data.length) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 8.0,
-              ),
-              child: Center(
-                child: cp is CursorPaginationFetchingMore
-                    ? const CircularProgressIndicator()
-                    : const Text("마지막 데이터"),
-              ),
+      child: RefreshIndicator(
+        onRefresh: () async {
+          ref.read(widget.provider.notifier).paginate(
+                forceRefetch: true, // force 를 하게 되면 ui 가 전체 로딩이 걸린다.
+              );
+        },
+        child: ListView.separated(
+          // item 이 작으면 스크롤 안되는데 언제나 스크롤되게 한다.
+          physics: const AlwaysScrollableScrollPhysics(),
+          controller: controller,
+          // +1 해준 이유는 로딩 때문에 로딩 그릴 한칸의 자리를 더 만든다.
+          itemCount: cp.data.length + 1,
+          itemBuilder: (_, index) {
+            if (index == cp.data.length) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 8.0,
+                ),
+                child: Center(
+                  child: cp is CursorPaginationFetchingMore
+                      ? const CircularProgressIndicator()
+                      : const Text("마지막 데이터"),
+                ),
+              );
+            }
+
+            final item = cp.data[index];
+
+            return widget.itemBuilder(context, index, item);
+          },
+          separatorBuilder: (_, index) {
+            return const SizedBox(
+              height: 16.0,
             );
-          }
-
-          final item = cp.data[index];
-
-          return widget.itemBuilder(context, index, item);
-        },
-        separatorBuilder: (_, index) {
-          return const SizedBox(
-            height: 16.0,
-          );
-        },
+          },
+        ),
       ),
     );
   }
