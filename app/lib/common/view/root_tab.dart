@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:restaurant_app/common/const/colors.dart';
 import 'package:restaurant_app/common/layout/default_layout.dart';
+import 'package:restaurant_app/order/view/order_screen.dart';
 import 'package:restaurant_app/product/view/product_screen.dart';
 import 'package:restaurant_app/user/view/profile_screen.dart';
 
@@ -90,14 +91,12 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
         // default 가 좌우로 스크롤 하면 tab 이 바뀌는 구조인데,
         // 위아래 스크롤 넣을거기 때문에 ux 상 불편해서
         // 기본 스크롤을 없애기 위해 NeverScrollableScrollPhysics 추가
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         controller: tabController,
-        children: [
+        children: const [
           RestaurantScreen(),
           ProductScreen(),
-          Container(
-            child: Center(child: Text("주문")),
-          ),
+          OrderScreen(),
           ProfileScreen(),
         ],
       ),
