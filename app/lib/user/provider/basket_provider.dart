@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:debounce_throttle/debounce_throttle.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurant_app/common/const/api_type.dart';
 
@@ -12,10 +13,17 @@ final basketProvider =
 
 class BasketProvider extends StateNotifier<List<BasketItemModel>> {
   final UserRepository repository;
+  final debounce = Debouncer(
+    const Duration(seconds: 1),
+    // state 가 필요없다. 상태에 따라 update 하기 때문
+    initialValue: null,
+  );
 
   BasketProvider({
     required this.repository,
-  }) : super([]);
+  }) : super([]) {
+    debounce.values.listen((event) => patchBasket());
+  }
 
   Future<void> patchBasket() async {
     await repository.patchBasket(
@@ -59,7 +67,7 @@ class BasketProvider extends StateNotifier<List<BasketItemModel>> {
     // UI 상 state 를 먼저 업데이트 시키는게 인터페이스가 좋다.
     // Optimistic Response (긍정적 응답) => 응답이 성공할 거라고 가정하고 상태를 먼저 업데이트 => 대신 실패하면 원복해야함
     try {
-      await patchBasket();
+      debounce.setValue(null);
     } catch (e) {
       state = origin;
     }
@@ -91,7 +99,7 @@ class BasketProvider extends StateNotifier<List<BasketItemModel>> {
     }
 
     try {
-      await patchBasket();
+      debounce.setValue(null);
     } catch (e) {
       // API 실패 시 원복
       state = origin;
