@@ -1,11 +1,35 @@
+import 'package:debounce_throttle/debounce_throttle.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurant_app/common/const/api_type.dart';
 import 'package:restaurant_app/common/repository/base_pagination_repository.dart';
+
+class _PaginationInfo {
+  final int fetchCount;
+
+  // true - 추가로 데이터 가져옴
+  // false - 새로고침 (현재 상태를 덮어씌움)
+  final bool fetchMore;
+
+  // 강제 로딩
+  // true - CursorPaginationLoading()
+  final bool forceRefetch;
+
+  _PaginationInfo({
+    this.fetchCount = 20,
+    this.fetchMore = false,
+    this.forceRefetch = false,
+  });
+}
 
 class PaginationProvider<T extends IModelWithId,
         U extends IBasePaginationRepository<T>>
     extends StateNotifier<CursorPaginationBase> {
   final U repository;
+  final throttle = Throttle(
+    const Duration(seconds: 1),
+    initialValue: _PaginationInfo(),
+    checkEquality: false, // 실행 함수가 똑같으면 넣지 않는다는 옵션인데, false 로 해서 실행하게 한다.
+  );
 
   PaginationProvider({
     required this.repository,
@@ -13,6 +37,11 @@ class PaginationProvider<T extends IModelWithId,
           CursorPaginationLoading(),
         ) {
     paginate();
+    throttle.values.listen((state) {
+      // setValue 에서 받아온 값이 state 로 넘어온다.
+      // 처음에는 initialValue 가 들어온다.
+      _throttledPagination(state);
+    });
   }
 
   Future<void> paginate({
@@ -24,6 +53,17 @@ class PaginationProvider<T extends IModelWithId,
     // true - CursorPaginationLoading()
     bool forceRefetch = false,
   }) async {
+    throttle.setValue(_PaginationInfo(
+      fetchCount: fetchCount,
+      fetchMore: fetchMore,
+      forceRefetch: forceRefetch,
+    ));
+  }
+
+  _throttledPagination(_PaginationInfo info) async {
+    final fetchCount = info.fetchCount;
+    final fetchMore = info.fetchMore;
+    final forceRefetch = info.forceRefetch;
     try {
       /*
     * 5가지 경우의 수

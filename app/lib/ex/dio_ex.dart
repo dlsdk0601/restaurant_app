@@ -43,14 +43,12 @@ class CustomInterceptor extends Interceptor {
       // true 값 상관없이 token 이 있든 없든 일단 보내야하는게 맞다.
       options.headers.remove(accessTokenKey);
       final token = await storage.read(key: ACCESS_TOKEN_KEY);
-      print("[TOKEN] : $token");
       options.headers.addAll(DataUtils.getBearerHeader(token));
     }
 
     if (options.headers[refreshTokenKey] == "true") {
       options.headers.remove(refreshTokenKey);
       final refreshToken = await storage.read(key: REFRESH_TOKEN_KEY);
-      print("[REFRESH TOKEN] : $refreshToken");
       options.headers.addAll(DataUtils.getBearerHeader(refreshToken));
     }
 
